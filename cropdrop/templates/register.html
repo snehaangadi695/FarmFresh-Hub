@@ -1,0 +1,262 @@
+
+{% extends 'base.html' %}
+
+{% block content %}
+
+<style>
+
+/* PAGE WRAPPER */
+
+.register-page {
+    min-height: 85vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+
+/* REGISTER CARD */
+
+.form-box {
+
+    width: 420px;
+    padding: 40px;
+
+    background: rgba(255,255,255,0.15);
+    backdrop-filter: blur(15px);
+
+    border-radius: 25px;
+
+    box-shadow: 0 20px 40px rgba(0,0,0,0.35);
+
+    text-align: center;
+    color: white;
+
+    transition: 0.4s;
+}
+
+.form-box:hover {
+    transform: translateY(-10px) scale(1.02);
+}
+
+
+/* TITLE */
+
+.form-box h2 {
+    margin-bottom: 25px;
+    font-weight: bold;
+}
+
+
+/* INPUTS */
+
+.form-box input,
+.form-box select {
+
+    width: 100%;
+    padding: 12px;
+
+    margin: 10px 0;
+
+    border: none;
+    outline: none;
+
+    border-radius: 12px;
+
+    background: rgba(255,255,255,0.25);
+    color: white;
+
+    font-size: 15px;
+}
+
+.form-box input::placeholder {
+    color: #eee;
+}
+
+
+/* SELECT STYLE */
+
+.form-box select {
+    color: white;
+}
+
+.form-box select option {
+    color: black;
+}
+
+
+/* BUTTON */
+
+.form-box button {
+
+    width: 100%;
+    padding: 12px;
+
+    margin-top: 10px;
+
+    border: none;
+    border-radius: 30px;
+
+    background: linear-gradient(45deg,#ffd700,#ff9800);
+
+    font-weight: bold;
+    font-size: 16px;
+
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.form-box button:hover {
+
+    transform: scale(1.05);
+
+    box-shadow: 0 5px 20px rgba(0,0,0,0.4);
+}
+
+
+/* MESSAGE */
+
+ul.messages {
+
+    list-style: none;
+
+    padding: 0;
+    margin-bottom: 15px;
+}
+
+ul.messages li {
+
+    background: rgba(255,0,0,0.2);
+
+    padding: 8px;
+
+    border-radius: 10px;
+
+    margin-bottom: 5px;
+
+    font-weight: bold;
+}
+
+
+/* LOGIN LINK */
+
+.extra-text {
+
+    margin-top: 15px;
+
+    font-size: 14px;
+}
+
+.extra-text a {
+
+    color: #ffd700;
+
+    font-weight: bold;
+
+    text-decoration: none;
+}
+
+.extra-text a:hover {
+
+    text-decoration: underline;
+}
+
+</style>
+
+
+
+<div class="register-page">
+
+    <div class="form-box">
+
+        <h2>🌾 Create Account</h2>
+
+
+        {% if messages %}
+
+            <ul class="messages">
+
+                {% for message in messages %}
+
+                    <li>{{ message }}</li>
+
+                {% endfor %}
+
+            </ul>
+
+        {% endif %}
+
+
+
+        <form method="POST">
+
+            {% csrf_token %}
+
+            <input
+                type="text"
+                name="username"
+                placeholder="Username"
+                required
+            >
+
+            <input
+                type="email"
+                name="email"
+                placeholder="Email"
+                required
+            >
+
+            <input
+                type="password"
+                name="password"
+                placeholder="Password"
+                required
+            >
+
+            <input
+                type="text"
+                name="phone"
+                placeholder="Phone Number"
+                required
+            >
+
+
+            <select name="role">
+
+                <option value="farmer">Farmer</option>
+                <option value="customer">Customer</option>
+
+            </select>
+
+
+            <input
+                type="text"
+                name="extra"
+                placeholder="Location (Farmer) / Address (Customer)"
+                required
+            >
+
+
+            <button type="submit">
+                Register
+            </button>
+
+        </form>
+
+
+
+        <div class="extra-text">
+
+            Already have an account?
+
+            <a href="{% url 'login' %}">
+                Login
+            </a>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

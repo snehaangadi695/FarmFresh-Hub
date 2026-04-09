@@ -1,0 +1,175 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<style>
+
+/* PAGE WRAPPER */
+
+.add-product-page {
+    min-height: 85vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+
+/* FORM CARD */
+
+.form-box {
+    width: 420px;
+    padding: 40px;
+
+    background: rgba(255,255,255,0.15);
+    backdrop-filter: blur(15px);
+
+    border-radius: 25px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.35);
+
+    text-align: center;
+    color: white;
+
+    transition: 0.4s;
+}
+
+.form-box:hover {
+    transform: translateY(-10px) scale(1.02);
+}
+
+
+/* TITLE */
+
+.form-box h2 {
+    margin-bottom: 25px;
+    font-weight: bold;
+}
+
+
+/* INPUTS */
+
+.form-box input,
+.form-box select {
+
+    width: 100%;
+    padding: 12px;
+    margin: 10px 0;
+
+    border: none;
+    outline: none;
+
+    border-radius: 12px;
+
+    background: rgba(255,255,255,0.25);
+    color: white;
+    font-size: 15px;
+}
+
+.form-box input::placeholder {
+    color: #eee;
+}
+
+
+/* SELECT OPTIONS */
+
+.form-box select option {
+    color: black;
+}
+
+
+/* FILE INPUT */
+
+.form-box input[type="file"] {
+    background: none;
+}
+
+
+/* BUTTON */
+
+.form-box button {
+
+    width: 100%;
+    padding: 12px;
+    margin-top: 10px;
+
+    border: none;
+    border-radius: 30px;
+
+    background: linear-gradient(45deg,#ffd700,#ff9800);
+
+    font-weight: bold;
+    font-size: 16px;
+
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.form-box button:hover {
+
+    transform: scale(1.05);
+
+    box-shadow: 0 5px 20px rgba(0,0,0,0.4);
+}
+
+</style>
+
+
+
+<div class="add-product-page">
+
+    <div class="form-box">
+
+        <h2>🌾 Add Product</h2>
+
+        <form method="POST" enctype="multipart/form-data">
+
+            {% csrf_token %}
+
+            <input type="text" name="name" placeholder="Product Name" required>
+
+            <input type="number" step="0.01" name="price" placeholder="Price" required>
+
+            <input type="number" name="quantity" placeholder="Quantity" required>
+
+            <!-- Unit -->
+
+            <select name="unit" required>
+
+                <option value="">Select Unit</option>
+                <option value="kg">KG</option>
+                <option value="gram">Gram</option>
+                <option value="dozen">Dozen</option>
+
+            </select>
+
+            <!-- Category -->
+
+            <select name="category" required>
+
+                <option value="">Select Category</option>
+
+                {% for category in categories %}
+                    <option value="{{ category.id }}">{{ category.name }}</option>
+                {% endfor %}
+
+            </select>
+
+            <select name="quality" required>
+
+                <option value="">Select Quality</option>
+                <option value="premium">🌟 Premium</option>
+                <option value="standard">🟡 Standard</option>
+                <option value="low">🔴 Low</option>
+
+            </select>
+
+            <input type="file" name="image" required>
+
+            <button type="submit">Add Product</button>
+
+        </form>
+
+    </div>
+
+</div>
+
+{% endblock %}

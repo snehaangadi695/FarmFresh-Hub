@@ -1,0 +1,229 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<style>
+
+/* PAGE TITLE */
+
+.orders-title {
+    text-align: center;
+    font-size: 38px;
+    margin-bottom: 30px;
+}
+
+
+/* ORDERS WRAPPER */
+
+.orders-wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 30px;
+}
+
+
+/* ORDER CARD */
+
+.order-card {
+    width: 320px;
+    background: rgba(255,255,255,0.15);
+    backdrop-filter: blur(12px);
+    border-radius: 20px;
+    padding: 20px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.35);
+    transition: 0.4s;
+    text-align: center;
+}
+
+.order-card:hover {
+    transform: translateY(-10px) scale(1.03);
+    box-shadow: 0 15px 40px rgba(255,215,0,0.3);
+}
+
+
+/* TEXT */
+
+.order-card p {
+    margin: 5px 0;
+}
+
+
+/* TRACKING */
+
+.tracking-steps {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+.step {
+    flex: 1;
+    position: relative;
+    text-align: center;
+}
+
+.step::after {
+    content: '';
+    position: absolute;
+    top: 15px;
+    right: -50%;
+    width: 100%;
+    height: 3px;
+    background: #ccc;
+    z-index: -1;
+}
+
+.step:last-child::after {
+    display: none;
+}
+
+.step.active::after {
+    background: #4caf50;
+}
+
+.circle {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    background: #ccc;
+    color: black;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: auto;
+    font-weight: bold;
+}
+
+.step.active .circle {
+    background: #4caf50;
+    color: white;
+}
+
+.step p {
+    font-size: 12px;
+    margin-top: 8px;
+}
+
+
+/* STATUS SELECT */
+
+.order-card select {
+    width: 100%;
+    padding: 10px;
+    border-radius: 10px;
+    border: none;
+    margin-top: 10px;
+}
+
+
+/* BUTTON */
+
+.order-card button {
+    width: 100%;
+    margin-top: 10px;
+    padding: 10px;
+    border: none;
+    border-radius: 25px;
+    background: linear-gradient(45deg,#ffd700,#ff9800);
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.order-card button:hover {
+    transform: scale(1.05);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.4);
+}
+
+
+/* EMPTY MESSAGE */
+
+.empty-msg {
+    text-align: center;
+    font-size: 18px;
+    margin-top: 30px;
+}
+
+</style>
+
+
+
+<h2 class="orders-title">📦 My Orders</h2>
+
+
+<div class="orders-wrapper">
+
+{% for order in orders %}
+
+<div class="order-card">
+
+    <h3>{{ order.product.name }}</h3>
+
+    <p><strong>Quantity:</strong> {{ order.quantity }}</p>
+    <p><strong>Total Price:</strong> ₹{{ order.total_price }}</p>
+    <p><strong>Status:</strong> {{ order.status }}</p>
+    <p><strong>Ordered At:</strong> {{ order.created_at|date:"d M Y H:i" }}</p>
+
+
+    <!-- TRACKING UI -->
+
+    <div class="tracking-steps">
+
+        <!-- STEP 1 -->
+        <div class="step {% if order.status == 'Pending' or order.status == 'Accepted' or order.status == 'Preparing' or order.status == 'Out for Delivery' or order.status == 'Delivered' %}active{% endif %}">
+            <div class="circle">✔</div>
+            <p>Placed</p>
+        </div>
+
+        <!-- STEP 2 -->
+        <div class="step {% if order.status == 'Preparing' or order.status == 'Out for Delivery' or order.status == 'Delivered' %}active{% endif %}">
+            <div class="circle">✔</div>
+            <p>Preparing</p>
+        </div>
+
+        <!-- STEP 3 -->
+        <div class="step {% if order.status == 'Out for Delivery' or order.status == 'Delivered' %}active{% endif %}">
+            <div class="circle">✔</div>
+            <p>Out</p>
+        </div>
+
+        <!-- STEP 4 -->
+        <div class="step {% if order.status == 'Delivered' %}active{% endif %}">
+            <div class="circle">✔</div>
+            <p>Done</p>
+        </div>
+
+    </div>
+
+
+    <!-- FARMER CAN UPDATE -->
+
+    {% if user.farmer %}
+
+    <form method="post" action="{% url 'update_order_status' order.id %}">
+        {% csrf_token %}
+
+        <select name="status">
+            <option>Pending</option>
+            <option>Shiped</option>
+            <option>Out for Delivery</option>
+            <option value="Delivered">Delivered</option>
+        </select>
+
+        <button type="submit">Update Status</button>
+    </form>
+
+    {% endif %}
+
+</div>
+
+{% empty %}
+
+<p class="empty-msg">No orders placed yet.</p>
+
+{% endfor %}
+
+</div>
+
+{% endblock %}

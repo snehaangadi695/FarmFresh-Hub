@@ -1,0 +1,229 @@
+
+{% extends 'base.html' %}
+
+{% block content %}
+
+<style>
+
+/* PAGE AREA (below navbar) */
+
+.login-page {
+    min-height: 85vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+
+/* LOGIN CARD */
+
+.login-box {
+
+    width: 380px;
+    padding: 40px;
+
+    background: rgba(255,255,255,0.15);
+    backdrop-filter: blur(15px);
+
+    border-radius: 25px;
+
+    box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+
+    text-align: center;
+    color: white;
+
+    transition: 0.4s;
+}
+
+.login-box:hover {
+    transform: translateY(-8px) scale(1.02);
+}
+
+
+/* ICON */
+
+.login-icon {
+    font-size: 35px;
+    margin-bottom: 10px;
+}
+
+
+/* TITLE */
+
+.login-box h2 {
+    font-weight: bold;
+    margin-bottom: 25px;
+}
+
+
+/* INPUTS */
+
+.login-box input {
+
+    width: 100%;
+    padding: 12px;
+
+    margin: 12px 0;
+
+    border: none;
+    outline: none;
+
+    border-radius: 12px;
+
+    background: rgba(255,255,255,0.25);
+    color: white;
+
+    font-size: 15px;
+}
+
+.login-box input::placeholder {
+    color: #f1f1f1;
+}
+
+
+/* BUTTON */
+
+.login-box button {
+
+    width: 100%;
+    padding: 12px;
+
+    margin-top: 10px;
+
+    border: none;
+    border-radius: 30px;
+
+    background: linear-gradient(45deg,#ffd700,#ff9800);
+
+    font-weight: bold;
+    font-size: 16px;
+
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.login-box button:hover {
+    transform: scale(1.05);
+    box-shadow: 0 5px 20px rgba(0,0,0,0.4);
+}
+
+
+/* MESSAGE */
+
+ul.messages {
+
+    list-style: none;
+
+    padding: 0;
+    margin-bottom: 15px;
+}
+
+ul.messages li {
+
+    background: rgba(255,0,0,0.2);
+
+    padding: 8px;
+
+    border-radius: 10px;
+
+    margin-bottom: 5px;
+
+    font-weight: bold;
+}
+
+
+/* REGISTER LINK */
+
+.extra-text {
+
+    margin-top: 15px;
+
+    font-size: 14px;
+}
+
+.extra-text a {
+
+    color: #ffd700;
+
+    font-weight: bold;
+
+    text-decoration: none;
+}
+
+.extra-text a:hover {
+    text-decoration: underline;
+}
+
+</style>
+
+
+
+<div class="login-page">
+
+    <div class="login-box">
+
+        <div class="login-icon">
+            🌾🥕🍅
+        </div>
+
+        <h2>Welcome Back</h2>
+
+
+
+        {% if messages %}
+
+            <ul class="messages">
+
+                {% for message in messages %}
+
+                    <li>{{ message }}</li>
+
+                {% endfor %}
+
+            </ul>
+
+        {% endif %}
+
+
+
+        <form method="POST">
+
+            {% csrf_token %}
+
+            <input
+                type="text"
+                name="username"
+                placeholder="Username"
+                required
+            >
+
+            <input
+                type="password"
+                name="password"
+                placeholder="Password"
+                required
+            >
+
+            <button type="submit">
+                Login
+            </button>
+
+        </form>
+
+
+
+        <div class="extra-text">
+
+            Don't have an account?
+
+            <a href="{% url 'register' %}">
+                Register
+            </a>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

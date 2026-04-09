@@ -1,0 +1,242 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<style>
+
+/* PAGE WRAPPER */
+
+.dashboard-page {
+    padding-top: 20px;
+}
+
+
+/* TITLE */
+
+.dashboard-title {
+    text-align: center;
+    font-size: 40px;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+
+/* STATS BOX */
+
+.stats-box {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    margin-bottom: 25px;
+    flex-wrap: wrap;
+}
+
+.stat-card {
+    background: rgba(255,255,255,0.15);
+    backdrop-filter: blur(12px);
+    padding: 20px 35px;
+    border-radius: 18px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+    text-align: center;
+    min-width: 200px;
+}
+
+.stat-card h3 {
+    margin: 0;
+    font-size: 22px;
+}
+
+
+/* DASHBOARD BUTTONS */
+
+.dashboard-actions {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.dashboard-btn {
+    display: inline-block;
+    margin: 10px;
+    padding: 12px 28px;
+    background: linear-gradient(45deg,#ffd700,#ff9800);
+    color: black;
+    font-weight: bold;
+    border-radius: 30px;
+    text-decoration: none;
+    transition: 0.3s;
+}
+
+.dashboard-btn:hover {
+    transform: scale(1.08);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+}
+
+
+/* PRODUCT CARDS WRAPPER */
+
+.cards-wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 30px;
+}
+
+
+/* PRODUCT CARD */
+
+.card {
+    width: 260px;
+    background: rgba(255,255,255,0.12);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.35);
+    overflow: hidden;
+    transition: 0.4s;
+}
+
+.card:hover {
+    transform: translateY(-10px) scale(1.04);
+}
+
+
+/* IMAGE */
+
+.card img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+}
+
+
+/* CARD CONTENT */
+
+.card-content {
+    padding: 15px;
+    text-align: center;
+}
+
+.card-content h3 {
+    margin: 8px 0;
+    font-size: 20px;
+}
+
+.card-content p {
+    margin: 4px 0;
+    font-size: 15px;
+}
+
+
+/* DELETE BUTTON */
+
+.delete-btn {
+    background: #ff4d4d;
+    color: white;
+    padding: 6px 15px;
+    border-radius: 20px;
+    text-decoration: none;
+    font-weight: bold;
+    display: inline-block;
+    margin-top: 10px;
+    transition: 0.3s;
+}
+
+.delete-btn:hover {
+    background: #cc0000;
+    transform: scale(1.08);
+}
+
+
+/* EMPTY MESSAGE */
+
+.empty-msg {
+    text-align: center;
+    font-size: 18px;
+    margin-top: 20px;
+}
+
+</style>
+
+
+
+<div class="dashboard-page">
+
+    <h2 class="dashboard-title">🌾 Farmer Dashboard</h2>
+
+
+    <!-- STATS -->
+
+    <div class="stats-box">
+
+        <div class="stat-card">
+            <h3>Total Products</h3>
+            <p>{{ total_products }}</p>
+        </div>
+
+        <div class="stat-card">
+            <h3>Total Orders</h3>
+            <p>{{ total_orders }}</p>
+        </div>
+
+    </div>
+
+
+    <!-- ACTION BUTTONS -->
+
+    <div class="dashboard-actions">
+
+        <a href="{% url 'add_product' %}" class="dashboard-btn">
+            ➕ Add Product
+        </a>
+
+        <a href="{% url 'orders' %}" class="dashboard-btn">
+            📦 View Orders
+        </a>
+
+    </div>
+
+
+    <!-- PRODUCT CARDS -->
+
+    <div class="cards-wrapper">
+
+        {% for product in products %}
+
+        <div class="card">
+
+            {% if product.image %}
+                <img src="{{ product.image.url }}" alt="{{ product.name }}">
+            {% else %}
+                <img src="https://via.placeholder.com/250x200" alt="No Image">
+            {% endif %}
+
+            <div class="card-content">
+
+                <h3>{{ product.name }}</h3>
+
+                <p><b>Farmer:</b> {{ product.farmer.user.username }}</p>
+
+                <p>Price: ₹{{ product.price }} / {{ product.unit }}</p>
+
+                <p>Qty: {{ product.quantity }} {{ product.unit }}</p>
+
+                <a href="{% url 'delete_product' product.id %}" class="delete-btn">
+                    Delete
+                </a>
+
+            </div>
+
+        </div>
+
+        {% empty %}
+
+        <p class="empty-msg">
+            No products added yet.
+        </p>
+
+        {% endfor %}
+
+    </div>
+
+</div>
+
+{% endblock %}

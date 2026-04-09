@@ -1,0 +1,250 @@
+
+<!DOCTYPE html>
+{% load static %}
+<html>
+
+<head>
+    <title>🥬 FarmFresh Hub</title>
+
+    <!-- ✅ MOBILE RESPONSIVE META -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+
+        /* BODY */
+        body {
+            margin: 0;
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg,#0f3d20,#2e7d32,#66bb6a);
+            background-size: 400% 400%;
+            animation: gradientMove 12s ease infinite;
+            color: white;
+        }
+
+        /* Background Animation */
+        @keyframes gradientMove {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* NAVBAR */
+        nav {
+            position: sticky;
+            top: 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 40px;
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+            z-index: 1000;
+        }
+
+        /* LEFT SIDE */
+        .nav-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        /* NAV LINKS */
+        nav a {
+            color: white;
+            text-decoration: none;
+            margin: 0 10px;
+            font-weight: 600;
+            font-size: 17px;
+            padding: 8px 15px;
+            border-radius: 10px;
+            transition: 0.3s;
+            position: relative;
+        }
+
+        nav a:hover {
+            background: rgba(255,255,255,0.2);
+            transform: translateY(-3px);
+        }
+
+        /* underline */
+        nav a::after {
+            content: "";
+            position: absolute;
+            left: 0;
+            bottom: -3px;
+            width: 0%;
+            height: 2px;
+            background: #ffd700;
+            transition: 0.3s;
+        }
+
+        nav a:hover::after {
+            width: 100%;
+        }
+
+        /* LOGO */
+        nav img {
+            height: 45px;
+            border-radius: 10px;
+        }
+
+        /* BUTTONS */
+        .logout-btn {
+            background: linear-gradient(45deg,#ffd700,#ff9800);
+            border-radius: 30px;
+            padding: 8px 18px;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+
+        .logout-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .my-orders-btn {
+            border-radius: 20px;
+            padding: 8px 18px;
+        }
+
+        /* CONTAINER */
+        .container {
+            padding: 40px;
+        }
+
+        /* CARDS */
+        .card {
+            width: 260px;
+            background: linear-gradient(145deg,#1b5e20,#2e7d32);
+            border-radius: 20px;
+            box-shadow: 0 20px 30px rgba(0,0,0,0.4);
+            transition: 0.4s;
+            color: white;
+            overflow: hidden;
+        }
+
+        .card:hover {
+            transform: translateY(-10px) scale(1.05);
+        }
+
+        .card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .cards-wrapper {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 40px;
+            margin-top: 30px;
+        }
+
+        /* ========================= */
+        /* 📱 MOBILE RESPONSIVE */
+        /* ========================= */
+
+        @media (max-width: 768px) {
+
+            nav {
+                flex-direction: column;
+                padding: 10px;
+                text-align: center;
+            }
+
+            .nav-left {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            nav a {
+                display: inline-block;
+                margin: 5px;
+                font-size: 14px;
+                padding: 6px 10px;
+            }
+
+            nav img {
+                height: 35px;
+            }
+
+            nav > div:last-child {
+                margin-top: 10px;
+            }
+
+            .container {
+                padding: 20px 15px;
+            }
+
+            .card {
+                width: 100%;
+                max-width: 320px;
+            }
+
+            .card img {
+                height: 160px;
+            }
+
+            .cards-wrapper {
+                gap: 20px;
+            }
+
+            .logout-btn {
+                width: 100%;
+            }
+        }
+
+    </style>
+</head>
+
+<body>
+
+    <nav>
+
+        <!-- LEFT -->
+        <div class="nav-left">
+            <img src="{% static 'images/Fulllogo1.jpg' %}">
+
+            <a href="{% url 'home' %}">Home</a>
+
+            {% if user.is_authenticated %}
+
+                {% if user.farmer %}
+                    <a href="{% url 'farmer_dashboard' %}">Dashboard</a>
+                {% else %}
+                    <a href="{% url 'product_list' %}">Products</a>
+                    <a href="{% url 'cart' %}">Cart</a>
+                    <a href="{% url 'orders' %}" class="my-orders-btn">My Orders</a>
+                {% endif %}
+
+            {% endif %}
+        </div>
+
+        <!-- RIGHT -->
+        <div>
+            {% if user.is_authenticated %}
+                <form action="{% url 'logout' %}" method="post" style="display:inline;">
+                    {% csrf_token %}
+                    <button type="submit" class="logout-btn">Logout</button>
+                </form>
+            {% else %}
+                <a href="{% url 'login' %}">Login</a>
+                <a href="{% url 'register' %}">Register</a>
+            {% endif %}
+        </div>
+
+    </nav>
+
+    <div class="container">
+        {% block content %}
+        {% endblock %}
+    </div>
+
+</body>
+</html>

@@ -1,0 +1,144 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<style>
+
+/* PAGE TITLE */
+.order-title {
+    text-align: center;
+    font-size: 36px;
+    margin: 30px 0;
+}
+
+/* ORDER CARD */
+.order-box {
+    max-width: 420px;
+    margin: 30px auto;
+
+    background: rgba(255,255,255,0.15);
+    backdrop-filter: blur(12px);
+
+    padding: 25px;
+    border-radius: 20px;
+
+    box-shadow: 0 20px 40px rgba(0,0,0,0.35);
+}
+
+/* TEXT */
+.order-box p {
+    margin: 5px 0;
+}
+
+/* INPUTS */
+.order-box input,
+.order-box select,
+.order-box textarea {
+
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+
+    border-radius: 10px;
+    border: none;
+}
+
+/* BUTTON */
+.order-box button {
+
+    width: 100%;
+    padding: 12px;
+
+    border: none;
+    border-radius: 25px;
+
+    background: linear-gradient(45deg,#ffd700,#ff9800);
+
+    font-weight: bold;
+    cursor: pointer;
+
+    transition: 0.3s;
+}
+
+.order-box button:hover {
+    transform: scale(1.05);
+}
+
+/* ERROR */
+.error-msg {
+    color: red;
+    text-align: center;
+}
+
+</style>
+
+
+<h2 class="order-title">🧾 Place Order</h2>
+
+
+<div class="order-box">
+
+    <h3>{{ product.name }}</h3>
+
+    <p><b>Price:</b> ₹{{ product.price }}</p>
+
+    <p>
+        <b>Available Quantity:</b>
+        {{ product.quantity }} {{ product.unit }}
+    </p>
+
+
+    {% if error %}
+        <p class="error-msg">{{ error }}</p>
+    {% endif %}
+
+
+    <!-- ✅ SINGLE FORM (NO JS) -->
+    <form method="POST">
+
+        {% csrf_token %}
+
+        <!-- Quantity -->
+        <label><b>Quantity</b></label>
+        <input
+            type="number"
+            name="quantity"
+            value="1"
+            min="1"
+            max="{{ product.quantity }}"
+            required
+        >
+
+        <!-- Unit -->
+        <label><b>Unit</b></label>
+        <select name="unit">
+            <option value="kg">kg</option>
+            <option value="g">g</option>
+        </select>
+
+        <hr>
+
+        <!-- DELIVERY DETAILS -->
+        <h3>🏠 Delivery Details</h3>
+
+        <input type="text" name="name" placeholder="Full Name" required>
+
+        <input type="text" name="phone" placeholder="Phone Number" required>
+
+        <textarea name="address" placeholder="Full Address" rows="3" required></textarea>
+
+        <input type="text" name="city" placeholder="City" required>
+
+        <input type="text" name="pincode" placeholder="Pincode" required>
+
+
+        <!-- Submit -->
+        <button type="submit">
+            Place Order ✅
+        </button>
+
+    </form>
+
+</div>
+
+{% endblock %}
