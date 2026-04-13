@@ -235,49 +235,61 @@ def add_to_cart(request, id):
 
 
 @login_required
+@login_required
 def place_order(request, id):
+
+    # ✅ Ensure only customers can place orders
+    if not hasattr(request.user, 'customer'):
+        return redirect('home')
 
     product = get_object_or_404(Product, id=id)
     customer = request.user.customer
-    customer_email = customer.user.email
 
     if request.method == "POST":
 
-        quantity = int(request.POST.get("quantity"))
-        unit = request.POST.get("unit")
+        # ✅ Get quantity safely
+        quantity = request.POST.get("quantity")
 
-        # 🆕 New fields
-        name = request.POST.get("name")
-        phone = request.POST.get("phone")
-        address = request.POST.get("address")
-        city = request.POST.get("city")
-        pincode = request.POST.get("pincode")
+        if not quantity:
+            return render(request, "place_order.html", {
+                "product": product,
+                "error": "Please enter quantity"
+            })
 
-        product_quantity = product.quantity
+        try:
+            quantity = int(quantity)
+        except ValueError:
+            return render(request, "place_order.html", {
+                "product": product,
+                "error": "Invalid quantity"
+            })
 
-        # ❌ Quantity check
-        if quantity > product_quantity:
+        # ✅ Get other fields safely
+        unit = request.POST.get("unit") or ""
+        name = request.POST.get("name") or ""
+        phone = request.POST.get("phone") or ""
+        address = request.POST.get("address") or ""
+        city = request.POST.get("city") or ""
+        pincode = request.POST.get("pincode") or ""
+
+        # ✅ Check stock
+        if quantity > product.quantity:
             return render(request, "place_order.html", {
                 "product": product,
                 "error": "Not enough quantity available"
             })
 
+        # ✅ Calculate price
         total_price = quantity * product.price
 
-        # Farmer details
-        farmer_email = product.farmer.user.email
-        farmer_name = product.farmer.user.username
-
-        # ✅ Save Order (UPDATED)
-        Order.objects.create(
+        # ✅ Save order
+        order = Order.objects.create(
             customer=customer,
             product=product,
             quantity=quantity,
             unit=unit,
             total_price=total_price,
             status='pending',
-
-            # 🆕 Save customer details
             name=name,
             phone=phone,
             address=address,
@@ -285,10 +297,15 @@ def place_order(request, id):
             pincode=pincode
         )
 
-        # 📧 Send email to farmer (UPDATED)
+        # ✅ Reduce product quantity
+        product.quantity -= quantity
+        product.save()
 
-
+        # ✅ Send email safely (won’t crash app)
         try:
+            farmer_email = product.farmer.user.email
+            farmer_name = product.farmer.user.username
+
             send_mail(
                 subject='New Order Received',
                 message=(
@@ -304,12 +321,9 @@ def place_order(request, id):
                 recipient_list=[farmer_email],
                 fail_silently=True
             )
+
         except Exception as e:
             print("Email failed:", e)
-
-        # 🔻 Reduce product quantity
-        product.quantity = product_quantity - quantity
-        product.save()
 
         return redirect("orders")
 
