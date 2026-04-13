@@ -288,21 +288,24 @@ def place_order(request, id):
         # 📧 Send email to farmer (UPDATED)
 
 
-        send_mail(
-            subject='New Order Received',
-            message=(
-                f'Hi {farmer_name},\n\n'
-                f'You received a new order for {product.name}.\n\n'
-                f'👤 Customer: {name}\n'
-                f'📞 Phone: {phone}\n'
-                f'📍 Address: {address}, {city} - {pincode}\n\n'
-                f'📦 Quantity: {quantity} {unit}\n'
-                f'💰 Total Price: ₹{total_price}'
-            ),
-            from_email=settings.EMAIL_HOST_USER,
-            recipient_list=[farmer_email],
-            fail_silently=True
-        )
+        try:
+            send_mail(
+                subject='New Order Received',
+                message=(
+                    f'Hi {farmer_name},\n\n'
+                    f'You received a new order for {product.name}.\n\n'
+                    f'👤 Customer: {name}\n'
+                    f'📞 Phone: {phone}\n'
+                    f'📍 Address: {address}, {city} - {pincode}\n\n'
+                    f'📦 Quantity: {quantity} {unit}\n'
+                    f'💰 Total Price: ₹{total_price}'
+                ),
+                from_email=settings.EMAIL_HOST_USER,
+                recipient_list=[farmer_email],
+                fail_silently=True
+            )
+        except Exception as e:
+            print("Email failed:", e)
 
         # 🔻 Reduce product quantity
         product.quantity = product_quantity - quantity
