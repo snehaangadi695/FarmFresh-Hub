@@ -23,7 +23,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-$x$h0h_xk2$a9jqu-i^_9iqxlmbxa*qbstl1px1yyybww4x%=+'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['my-project-d1gh.onrender.com']
 
@@ -138,19 +138,13 @@ EMAIL_HOST_PASSWORD = 'jkwdkcikwofczfjd'
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
 import os
+import cloudinary
 
 CLOUDINARY_STORAGE = {
     'CLOUD_NAME':os.getenv('dh4lbwspm'),
     'API_KEY': os.getenv('129797685555475'),
     'API_SECRET': os.getenv('Pp4us-hEwuaIPduZrKBlxz55g2Y')
 }
-
-import cloudinary
-
-cloudinary.config(
-    cloud_name = "dh4lbwspm",
-    api_key = "129797685555475",
-    api_secret = "Pp4us-hEwuaIPduZrKBlxz55g2Y"
 )
 
 
