@@ -298,6 +298,7 @@ def place_order(request, id):
             ),
             from_email='snehaangadi690@gmail.com',
             recipient_list=[farmer_email],
+            fail_silently=False
         )
 
         # 🔻 Reduce product quantity
