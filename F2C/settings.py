@@ -141,11 +141,11 @@ import os
 import cloudinary
 
 CLOUDINARY_STORAGE = {
-    'CLOUD_NAME':os.getenv('dh4lbwspm'),
-    'API_KEY': os.getenv('129797685555475'),
-    'API_SECRET': os.getenv('Pp4us-hEwuaIPduZrKBlxz55g2Y')
+    'CLOUD_NAME': os.getenv('CLOUD_NAME'),
+    'API_KEY': os.getenv('API_KEY'),
+    'API_SECRET': os.getenv('API_SECRET'),
 }
-)
+
 
 
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
