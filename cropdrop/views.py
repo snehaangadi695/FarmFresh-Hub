@@ -6,6 +6,7 @@ from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.core.mail import send_mail 
+from django.conf import settings
 
 
 def home(request):
@@ -285,6 +286,8 @@ def place_order(request, id):
         )
 
         # 📧 Send email to farmer (UPDATED)
+
+
         send_mail(
             subject='New Order Received',
             message=(
@@ -296,7 +299,7 @@ def place_order(request, id):
                 f'📦 Quantity: {quantity} {unit}\n'
                 f'💰 Total Price: ₹{total_price}'
             ),
-            from_email='snehaangadi690@gmail.com',
+            from_email=settings.EMAIL_HOST_USER,
             recipient_list=[farmer_email],
             fail_silently=True
         )
