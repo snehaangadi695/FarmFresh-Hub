@@ -303,8 +303,14 @@ def place_order(request, id):
         product.quantity -= quantity
         product.save()
 
+    
         # ✅ Send email safely (won’t crash app)
         try:
+
+            print("SENDGRID KEY:", os.getenv('SENDGRID_API_KEY'))
+            print("FROM EMAIL:", settings.DEFAULT_FROM_EMAIL)
+
+
             farmer_email = product.farmer.user.email
             farmer_name = product.farmer.user.username
 
@@ -349,7 +355,11 @@ def update_order_status(request, id):
         order.status = status
         order.save()
 
+
         try:
+            print("SENDGRID KEY:", os.getenv('SENDGRID_API_KEY'))
+            print("FROM EMAIL:", settings.DEFAULT_FROM_EMAIL)
+            
             customer_email = order.customer.user.email
             customer_name = order.customer.user.username
 
