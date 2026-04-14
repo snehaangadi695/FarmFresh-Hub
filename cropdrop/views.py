@@ -235,7 +235,6 @@ def add_to_cart(request, id):
 
 
 @login_required
-@login_required
 def place_order(request, id):
 
     # ✅ Ensure only customers can place orders
@@ -246,6 +245,8 @@ def place_order(request, id):
     customer = request.user.customer
 
     if request.method == "POST":
+        print("EMAIL:", settings.EMAIL_HOST_USER)
+
 
         # ✅ Get quantity safely
         quantity = request.POST.get("quantity")
@@ -319,7 +320,7 @@ def place_order(request, id):
                 ),
                 from_email=settings.EMAIL_HOST_USER,
                 recipient_list=[farmer_email],
-                fail_silently=True
+                fail_silently=False
             )
 
         except Exception as e:
