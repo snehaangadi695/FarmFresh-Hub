@@ -326,7 +326,9 @@ def place_order(request, id):
             )
 
             sg = SendGridAPIClient(os.getenv('SENDGRID_API_KEY'))
-            sg.send(message)
+            response = sg.send(message)
+
+            print("EMAIL STATUS:", response.status_code)
 
         except Exception as e:
             print("EMAIL ERROR:", e)
@@ -368,7 +370,9 @@ def update_order_status(request, id):
             )
 
             sg = SendGridAPIClient(os.getenv('SENDGRID_API_KEY'))
-            sg.send(message)
+            response = sg.send(message)
+
+            print("EMAIL STATUS:", response.status_code)
 
         except Exception as e:
             print("EMAIL ERROR:", e)
