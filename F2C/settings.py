@@ -24,7 +24,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-$x$h0h_xk2$a9jqu-i^_9iqxlmbxa*qbstl1px1yyybww4x%=+'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['my-project-d1gh.onrender.com']
 
@@ -125,15 +125,6 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 
 
-
-
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.sendgrid.net'
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'apikey'
-EMAIL_HOST_PASSWORD = os.getenv('SENDGRID_API_KEY')
-
 DEFAULT_FROM_EMAIL = os.getenv('EMAIL_FROM_EMAIL')
 
 
@@ -150,5 +141,6 @@ CLOUDINARY_STORAGE = {
 }
 
 
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
-STATICFILES_STORAGE = 'whitenoise.storage.StaticFilesStorage'
+CSRF_TRUSTED_ORIGINS = ['https://my-project-d1gh.onrender.com']

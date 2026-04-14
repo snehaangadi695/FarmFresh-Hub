@@ -4,9 +4,11 @@ from django.contrib.auth import authenticate, login, logout
 from .models import Farmer, Customer, Product, Order ,Cart , Category
 from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
-from django.contrib import messages
-from django.core.mail import send_mail 
+from django.contrib import messages 
 from django.conf import settings
+import os
+from sendgrid import SendGridAPIClient
+from sendgrid.helpers.mail import Mail
 
 
 def home(request):
@@ -245,7 +247,6 @@ def place_order(request, id):
     customer = request.user.customer
 
     if request.method == "POST":
-        print("EMAIL:", settings.EMAIL_HOST_USER)
 
 
         # ✅ Get quantity safely
@@ -307,28 +308,34 @@ def place_order(request, id):
             farmer_email = product.farmer.user.email
             farmer_name = product.farmer.user.username
 
-            send_mail(
-                subject='New Order Received',
-                message=(
-                    f'Hi {farmer_name},\n\n'
-                    f'You received a new order for {product.name}.\n\n'
-                    f'👤 Customer: {name}\n'
-                    f'📞 Phone: {phone}\n'
-                    f'📍 Address: {address}, {city} - {pincode}\n\n'
-                    f'📦 Quantity: {quantity} {unit}\n'
-                    f'💰 Total Price: ₹{total_price}'
-                ),
+            message = Mail(
                 from_email=settings.DEFAULT_FROM_EMAIL,
-                recipient_list=[farmer_email],
-                fail_silently=False
+                to_emails=farmer_email,
+                subject='New Order Received',
+                html_content=f"""
+                <p>Hi {farmer_name},</p>
+                <p>You received a new order for <b>{product.name}</b>.</p>
+                <p>
+                👤 Customer: {name}<br>
+                📞 Phone: {phone}<br>
+                📍 Address: {address}, {city} - {pincode}<br><br>
+                📦 Quantity: {quantity} {unit}<br>
+                💰 Total Price: ₹{total_price}
+                </p>
+                """
             )
 
+            sg = SendGridAPIClient(os.getenv('SENDGRID_API_KEY'))
+            sg.send(message)
+
         except Exception as e:
-            print("Email failed:", e)
+            print("EMAIL ERROR:", e)
 
         return redirect("orders")
 
     return render(request, "place_order.html", {"product": product})
+
+    
 
 @login_required
 def update_order_status(request, id):
@@ -340,14 +347,31 @@ def update_order_status(request, id):
         order.status = status
         order.save()
 
-        customer_email = order.customer.user.email
+        try:
+            customer_email = order.customer.user.email
+            customer_name = order.customer.user.username
 
-        send_mail(
-            subject="Order Status Updated",
-            message=f"Your order for {order.product.name} is now: {status}",
-            from_email="snehaangadi690@gmail.com",
-            recipient_list=[customer_email],
-        )
+            # ✅ Send email using SendGrid
+            message = Mail(
+                from_email=settings.DEFAULT_FROM_EMAIL,
+                to_emails=customer_email,
+                subject="Order Status Updated",
+                html_content=f"""
+                <p>Hi {customer_name},</p>
+                <p>Your order for <b>{order.product.name}</b> has been updated.</p>
+                <p>
+                📦 Status: <b>{status}</b><br>
+                💰 Total Price: ₹{order.total_price}
+                </p>
+                <p>Thank you for shopping with us! 🌱</p>
+                """
+            )
+
+            sg = SendGridAPIClient(os.getenv('SENDGRID_API_KEY'))
+            sg.send(message)
+
+        except Exception as e:
+            print("EMAIL ERROR:", e)
 
     return redirect("orders")
 
