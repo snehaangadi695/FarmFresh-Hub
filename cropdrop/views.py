@@ -318,7 +318,7 @@ def place_order(request, id):
                     f'📦 Quantity: {quantity} {unit}\n'
                     f'💰 Total Price: ₹{total_price}'
                 ),
-                from_email=settings.EMAIL_HOST_USER,
+                from_email=settings.DEFAULT_FROM_EMAIL
                 recipient_list=[farmer_email],
                 fail_silently=False
             )
