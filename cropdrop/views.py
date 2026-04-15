@@ -306,18 +306,29 @@ def place_order(request, id):
     
         # ✅ Send email safely (won’t crash app)
         try:
-
             print("SENDGRID KEY:", os.getenv('SENDGRID_API_KEY'))
             print("FROM EMAIL:", settings.DEFAULT_FROM_EMAIL)
-
 
             farmer_email = product.farmer.user.email
             farmer_name = product.farmer.user.username
 
             message = Mail(
-                from_email=settings.DEFAULT_FROM_EMAIL,
+                from_email=("FarmFresh Hub", settings.DEFAULT_FROM_EMAIL),
                 to_emails=farmer_email,
-                subject='New Order Received',
+                subject='New Order Received 🌱',
+
+                # ✅ VERY IMPORTANT (reduces spam)
+                plain_text_content=f"""
+        New Order Received!
+
+        Product: {product.name}
+        Customer: {name}
+        Phone: {phone}
+        Address: {address}, {city} - {pincode}
+        Quantity: {quantity} {unit}
+        Total Price: ₹{total_price}
+                """,
+
                 html_content=f"""
                 <p>Hi {farmer_name},</p>
                 <p>You received a new order for <b>{product.name}</b>.</p>
@@ -330,6 +341,9 @@ def place_order(request, id):
                 </p>
                 """
             )
+
+            # ✅ ADD THIS (important for trust)
+            message.reply_to = settings.DEFAULT_FROM_EMAIL
 
             sg = SendGridAPIClient(os.getenv('SENDGRID_API_KEY'))
             response = sg.send(message)
@@ -363,11 +377,24 @@ def update_order_status(request, id):
             customer_email = order.customer.user.email
             customer_name = order.customer.user.username
 
-            # ✅ Send email using SendGrid
             message = Mail(
-                from_email=settings.DEFAULT_FROM_EMAIL,
+                from_email=("FarmFresh Hub", settings.DEFAULT_FROM_EMAIL),
                 to_emails=customer_email,
-                subject="Order Status Updated",
+                subject="Order Status Updated 🌱",
+
+                # ✅ VERY IMPORTANT
+                plain_text_content=f"""
+        Hi {customer_name},
+
+        Your order has been updated.
+
+        Product: {order.product.name}
+        Status: {status}
+        Total Price: ₹{order.total_price}
+
+        Thank you for shopping with us!
+                """,
+
                 html_content=f"""
                 <p>Hi {customer_name},</p>
                 <p>Your order for <b>{order.product.name}</b> has been updated.</p>
@@ -379,6 +406,9 @@ def update_order_status(request, id):
                 """
             )
 
+            # ✅ ADD THIS
+            message.reply_to = settings.DEFAULT_FROM_EMAIL
+
             sg = SendGridAPIClient(os.getenv('SENDGRID_API_KEY'))
             response = sg.send(message)
 
@@ -386,7 +416,6 @@ def update_order_status(request, id):
 
         except Exception as e:
             print("EMAIL ERROR:", e)
-
     return redirect("orders")
 
 
