@@ -149,4 +149,14 @@ CLOUDINARY_STORAGE = {
 
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
-CSRF_TRUSTED_ORIGINS = ['https://my-project-d1gh.onrender.com']
+CSRF_TRUSTED_ORIGINS = [
+    'https://my-project-d1gh.onrender.com',
+    'https://*.onrender.com'
+]
+
+
+CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = True
+
+CSRF_COOKIE_SAMESITE = 'None'
+SESSION_COOKIE_SAMESITE = 'None'
