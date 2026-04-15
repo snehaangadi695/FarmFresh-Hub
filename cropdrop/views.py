@@ -313,33 +313,34 @@ def place_order(request, id):
             farmer_name = product.farmer.user.username
 
             message = Mail(
-                from_email=settings.DEFAULT_FROM_EMAIL),
-                to_emails=farmer_email,
+                from_email=settings.DEFAULT_FROM_EMAIL,
+                to_emails=[farmer_email],
                 subject='New Order Received 🌱',
+
 
                 # ✅ VERY IMPORTANT (reduces spam)
                 plain_text_content=f"""New Order Received!
 
-                Product: {product.name}
-                Customer: {name}
-                Phone: {phone}
-                Address: {address}, {city} - {pincode}
-                Quantity: {quantity} {unit}
-                Total Price: ₹{total_price}
-                """,
+Product: {product.name}
+Customer: {name}
+Phone: {phone}
+Address: {address}, {city} - {pincode}
+Quantity: {quantity} {unit}
+Total Price: ₹{total_price}
+""",
 
                 html_content=f"""
-                <p>Hi {farmer_name},</p>
-                <p>You received a new order for <b>{product.name}</b>.</p>
-                <p>
-                👤 Customer: {name}<br>
-                📞 Phone: {phone}<br>
-                📍 Address: {address}, {city} - {pincode}<br><br>
-                📦 Quantity: {quantity} {unit}<br>
-                💰 Total Price: ₹{total_price}
-                </p>
-                """
-            )
+<p>Hi {farmer_name},</p>
+<p>You received a new order for <b>{product.name}</b>.</p>
+<p>
+👤 Customer: {name}<br>
+📞 Phone: {phone}<br>
+📍 Address: {address}, {city} - {pincode}<br><br>
+📦 Quantity: {quantity} {unit}<br>
+💰 Total Price: ₹{total_price}
+</p>
+"""
+)
 
             # ✅ ADD THIS (important for trust)
             message.reply_to = settings.DEFAULT_FROM_EMAIL
@@ -377,32 +378,31 @@ def update_order_status(request, id):
             customer_name = order.customer.user.username
 
             message = Mail(
-                from_email=(settings.DEFAULT_FROM_EMAIL),
+                from_email=settings.DEFAULT_FROM_EMAIL,
                 to_emails=customer_email,
                 subject="Order Status Updated 🌱",
 
-                # ✅ VERY IMPORTANT
                 plain_text_content=f"""Hi {customer_name},
 
-                Your order has been updated.
+Your order has been updated.
 
-                Product: {order.product.name}
-                Status: {status}
-                Total Price: ₹{order.total_price}
+Product: {order.product.name}
+Status: {status}
+Total Price: ₹{order.total_price}
 
-                Thank you for shopping with us!
-                """,
+Thank you for shopping with us!
+""",
 
                 html_content=f"""
-                <p>Hi {customer_name},</p>
-                <p>Your order for <b>{order.product.name}</b> has been updated.</p>
-                <p>
-                📦 Status: <b>{status}</b><br>
-                💰 Total Price: ₹{order.total_price}
-                </p>
-                <p>Thank you for shopping with us! 🌱</p>
-                """
-            )
+<p>Hi {customer_name},</p>
+<p>Your order for <b>{order.product.name}</b> has been updated.</p>
+<p>
+📦 Status: <b>{status}</b><br>
+💰 Total Price: ₹{order.total_price}
+</p>
+<p>Thank you for shopping with us! 🌱</p>
+"""
+)
 
             # ✅ ADD THIS
             message.reply_to = settings.DEFAULT_FROM_EMAIL
