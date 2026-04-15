@@ -313,7 +313,7 @@ def place_order(request, id):
             farmer_name = product.farmer.user.username
 
             message = Mail(
-                from_email=("FarmFresh Hub", settings.DEFAULT_FROM_EMAIL),
+                from_email=settings.DEFAULT_FROM_EMAIL),
                 to_emails=farmer_email,
                 subject='New Order Received 🌱',
 
@@ -377,7 +377,7 @@ def update_order_status(request, id):
             customer_name = order.customer.user.username
 
             message = Mail(
-                from_email=("FarmFresh Hub", settings.DEFAULT_FROM_EMAIL),
+                from_email=(settings.DEFAULT_FROM_EMAIL),
                 to_emails=customer_email,
                 subject="Order Status Updated 🌱",
 
