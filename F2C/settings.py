@@ -123,6 +123,10 @@ STATIC_URL = '/static/'
 
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
+LOGIN_URL = '/login/'
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/'
+
 
 
 DEFAULT_FROM_EMAIL = os.getenv('EMAIL_FROM_EMAIL')
