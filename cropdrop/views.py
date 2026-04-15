@@ -318,15 +318,14 @@ def place_order(request, id):
                 subject='New Order Received 🌱',
 
                 # ✅ VERY IMPORTANT (reduces spam)
-                plain_text_content=f"""
-        New Order Received!
+                plain_text_content=f"""New Order Received!
 
-        Product: {product.name}
-        Customer: {name}
-        Phone: {phone}
-        Address: {address}, {city} - {pincode}
-        Quantity: {quantity} {unit}
-        Total Price: ₹{total_price}
+                Product: {product.name}
+                Customer: {name}
+                Phone: {phone}
+                Address: {address}, {city} - {pincode}
+                Quantity: {quantity} {unit}
+                Total Price: ₹{total_price}
                 """,
 
                 html_content=f"""
@@ -383,16 +382,15 @@ def update_order_status(request, id):
                 subject="Order Status Updated 🌱",
 
                 # ✅ VERY IMPORTANT
-                plain_text_content=f"""
-        Hi {customer_name},
+                plain_text_content=f"""Hi {customer_name},
 
-        Your order has been updated.
+                Your order has been updated.
 
-        Product: {order.product.name}
-        Status: {status}
-        Total Price: ₹{order.total_price}
+                Product: {order.product.name}
+                Status: {status}
+                Total Price: ₹{order.total_price}
 
-        Thank you for shopping with us!
+                Thank you for shopping with us!
                 """,
 
                 html_content=f"""
