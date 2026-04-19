@@ -240,7 +240,7 @@ def add_to_cart(request, id):
 @login_required
 def place_order(request, id):
 
-    # ✅ Ensure only customers can place orders
+    # Ensure only customers can place orders
     if not hasattr(request.user, 'customer'):
         return redirect('home')
 
@@ -249,7 +249,7 @@ def place_order(request, id):
 
     if request.method == "POST":
 
-        # ✅ Get quantity safely
+        # Get quantity safely
         quantity = request.POST.get("quantity")
 
         if not quantity:
@@ -266,7 +266,7 @@ def place_order(request, id):
                 "error": "Invalid quantity"
             })
 
-        # ✅ Get other fields
+        # Get other fields
         unit = request.POST.get("unit") or ""
         name = request.POST.get("name") or ""
         phone = request.POST.get("phone") or ""
@@ -274,17 +274,17 @@ def place_order(request, id):
         city = request.POST.get("city") or ""
         pincode = request.POST.get("pincode") or ""
 
-        # ✅ Check stock
+        # Check stock
         if quantity > product.quantity:
             return render(request, "place_order.html", {
                 "product": product,
                 "error": "Not enough quantity available"
             })
 
-        # ✅ Calculate price
+        # Calculate price
         total_price = quantity * product.price
 
-        # ✅ Save order
+        # Save order
         order = Order.objects.create(
             customer=customer,
             product=product,
@@ -299,11 +299,11 @@ def place_order(request, id):
             pincode=pincode
         )
 
-        # ✅ Reduce product quantity
+        # Reduce product quantity
         product.quantity -= quantity
         product.save()
 
-        # ✅ Send email (Gmail SMTP)
+        # Send email (Gmail SMTP)
         try:
             farmer_email = product.farmer.user.email
             farmer_name = product.farmer.user.username
@@ -325,10 +325,10 @@ Total Price: ₹{total_price}
                 fail_silently=False,
             )
 
-            print("✅ Email sent successfully")
+            print("Email sent successfully")
 
         except Exception as e:
-            print("❌ EMAIL ERROR:", e)
+            print("EMAIL ERROR:", e)
 
         return redirect("orders")
 
@@ -336,7 +336,7 @@ Total Price: ₹{total_price}
 
     
 
-from django.core.mail import send_mail
+
 
 @login_required
 def update_order_status(request, id):
@@ -348,7 +348,7 @@ def update_order_status(request, id):
         order.status = status
         order.save()
 
-        # ✅ Send email (Gmail SMTP)
+        #  Send email (Gmail SMTP)
         try:
             customer_email = order.customer.user.email
             customer_name = order.customer.user.username
@@ -371,7 +371,7 @@ Thank you for shopping with us!
                 fail_silently=False,
             )
 
-            print("✅ Email sent successfully")
+            print("Email sent successfully")
 
         except Exception as e:
             print("❌ EMAIL ERROR:", e)
@@ -414,7 +414,7 @@ def user_logout(request):
 @login_required
 def cart(request):
 
-    # ✅ Prevent farmer access
+    # Prevent farmer access
     if not hasattr(request.user, 'customer'):
         return redirect('home')
 
@@ -439,3 +439,28 @@ def remove_from_cart(request, id):
         cart_item.delete()
 
     return redirect('cart')  # redirect to cart page
+
+
+@login_required
+def edit_product(request, pk):
+    product = get_object_or_404(Product, pk=pk)
+
+    # Only owner farmer can edit
+    if product.farmer != request.user.farmer:
+        return redirect('farmer_dashboard')
+
+    if request.method == "POST":
+        product.name = request.POST.get("name")
+        product.price = request.POST.get("price")
+        product.quantity = request.POST.get("quantity")
+        product.unit = request.POST.get("unit")
+
+        # optional image update
+        if request.FILES.get("image"):
+            product.image = request.FILES.get("image")
+
+        product.save()
+
+        return redirect('farmer_dashboard')
+
+    return redirect('farmer_dashboard')
