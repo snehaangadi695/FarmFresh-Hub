@@ -179,7 +179,11 @@
                         <input type="text" name="name" value="{{ product.name }}" required>
                         <input type="number" name="price" value="{{ product.price }}" required>
                         <input type="number" name="quantity" value="{{ product.quantity }}" required>
-                        <input type="text" name="unit" value="{{ product.unit }}" required>
+                        <select name="unit" required>
+                            <option value="kg" {% if product.unit == "kg" %}selected{% endif %}>Kg</option>
+                            <option value="g" {% if product.unit == "g" %}selected{% endif %}>Gram</option>
+                            <option value="dozen" {% if product.unit == "dozen" %}selected{% endif %}>dozen</option>
+                        </select>
 
                         <input type="file" name="image">
 
