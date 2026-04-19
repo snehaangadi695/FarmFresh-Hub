@@ -203,9 +203,15 @@
 <!-- TOGGLE SCRIPT -->
 <script>
 function toggleEdit(id) {
-    let form = document.getElementById("edit-form-" + id);
-    form.style.display = (form.style.display === "none") ? "block" : "none";
+
+    // 🔴 Close all edit forms first
+    let allForms = document.querySelectorAll(".edit-form");
+    allForms.forEach(function(form) {
+        form.style.display = "none";
+    });
+
+    // 🟢 Open only selected form
+    let currentForm = document.getElementById("edit-form-" + id);
+    currentForm.style.display = "block";
 }
 </script>
-
-{% endblock %}
