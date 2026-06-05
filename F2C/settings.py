@@ -165,7 +165,7 @@ DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 CSRF_TRUSTED_ORIGINS = [
-    'https://my-project-d1gh.onrender.com',
+    'https://farmfresh-hub-gcpq.onrender.com',
     'https://*.onrender.com'
 ]
 
