@@ -312,6 +312,8 @@ def place_order(request, id):
             print("EMAIL_HOST_USER:", settings.EMAIL_HOST_USER)
             print("DEFAULT_FROM_EMAIL:", settings.DEFAULT_FROM_EMAIL)
 
+            print("EMAIL_HOST_PASSWORD:", bool(settings.EMAIL_HOST_PASSWORD))
+
             send_mail(
                 subject='New Order Received 🌱',
                 message=f"""
