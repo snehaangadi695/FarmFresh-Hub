@@ -308,6 +308,10 @@ def place_order(request, id):
             farmer_email = product.farmer.user.email
             farmer_name = product.farmer.user.username
 
+            print("Farmer Email:", farmer_email)
+            print("EMAIL_HOST_USER:", settings.EMAIL_HOST_USER)
+            print("DEFAULT_FROM_EMAIL:", settings.DEFAULT_FROM_EMAIL)
+
             send_mail(
                 subject='New Order Received 🌱',
                 message=f"""
