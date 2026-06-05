@@ -308,34 +308,28 @@ def place_order(request, id):
             farmer_email = product.farmer.user.email
             farmer_name = product.farmer.user.username
 
-            print("Farmer Email:", farmer_email)
-            print("EMAIL_HOST_USER:", settings.EMAIL_HOST_USER)
-            print("DEFAULT_FROM_EMAIL:", settings.DEFAULT_FROM_EMAIL)
 
-            print("EMAIL_HOST_PASSWORD:", bool(settings.EMAIL_HOST_PASSWORD))
 
             send_mail(
-                subject='New Order Received 🌱',
-                message=f"""
-New Order Received!
+                subject="New Order Received 🌱",
+                message=f"""New Order Received!
 
-Product: {product.name}
-Customer: {name}
-Phone: {phone}
-Address: {address}, {city} - {pincode}
-Quantity: {quantity} {unit}
-Total Price: ₹{total_price}
-""",
-                from_email=None,  # uses DEFAULT_FROM_EMAIL
+        Product: {product.name}
+        Customer: {name}
+        Phone: {phone}
+        Address: {address}, {city} - {pincode}
+        Quantity: {quantity} {unit}
+        Total Price: ₹{total_price}
+        """,
+                from_email=settings.DEFAULT_FROM_EMAIL,
                 recipient_list=[farmer_email],
-                fail_silently=False,
+                fail_silently=True,
             )
 
             print("Email sent successfully")
 
         except Exception as e:
-            print("EMAIL ERROR:", e)
-
+            print("EMAIL ERROR:", str(e))
         return redirect("orders")
 
     return render(request, "place_order.html", {"product": product})
@@ -355,32 +349,32 @@ def update_order_status(request, id):
         order.save()
 
         #  Send email (Gmail SMTP)
+# Send email
         try:
             customer_email = order.customer.user.email
             customer_name = order.customer.user.username
 
             send_mail(
                 subject="Order Status Updated 🌱",
-                message=f"""
-Hi {customer_name},
+                message=f"""Hi {customer_name},
 
-Your order has been updated.
+        Your order has been updated.
 
-Product: {order.product.name}
-Status: {status}
-Total Price: ₹{order.total_price}
+        Product: {order.product.name}
+        Status: {status}
+        Total Price: ₹{order.total_price}
 
-Thank you for shopping with us!
-""",
-                from_email=None,  # uses DEFAULT_FROM_EMAIL
+        Thank you for shopping with us!
+        """,
+                from_email=settings.DEFAULT_FROM_EMAIL,
                 recipient_list=[customer_email],
-                fail_silently=False,
+                fail_silently=True,
             )
 
             print("Email sent successfully")
 
         except Exception as e:
-            print("❌ EMAIL ERROR:", e)
+            print("EMAIL ERROR:", str(e))
 
     return redirect("orders")
 
